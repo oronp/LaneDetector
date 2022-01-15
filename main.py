@@ -53,16 +53,34 @@ def regionOfInterest(image):
     masked_image = cv2.bitwise_and(image,mask)
     return masked_image
 
-image = cv2.imread("RoadPic.jpeg")  # reads a picture.
-lane_image = np.copy(image) #creating a copy of the original picture.
-canny_image = Canny(lane_image)
-cropped_image = regionOfInterest(canny_image)
-lines = cv2.HoughLinesP(cropped_image,2,np.pi/180,100,np.array([]),minLineLength=40,maxLineGap=5)
-#1. which image 2. height of bins 3.width of bins 4.array to work with 5. min to connect 6. max to connect
-averaged_lines = average_slope_intercept(lane_image,lines)
-line_image = display_lines(lane_image,averaged_lines)
-combo_image = cv2.addWeighted(lane_image, 0.8, line_image,1,1)
-cv2.imshow("POPUP",combo_image)  # write the picture -> get two arguments: 1. the name of the window will pop out. 2.the image variable.
-cv2.waitKey(0)  # wait command to keep the window up until the user click anything.
-#plt.imshow(canny)  # write the picture -> get one argument: the image variable.
-#plt.show() #shows the output without limited time.
+# image = cv2.imread("RoadPic.jpeg")  # reads a picture.
+# lane_image = np.copy(image) #creating a copy of the original picture.
+# canny_image = Canny(lane_image)
+# cropped_image = regionOfInterest(canny_image)
+# lines = cv2.HoughLinesP(cropped_image,2,np.pi/180,100,np.array([]),minLineLength=40,maxLineGap=5)
+# #1. which image 2. height of bins 3.width of bins 4.array to work with 5. min to connect 6. max to connect
+# averaged_lines = average_slope_intercept(lane_image,lines)
+# line_image = display_lines(lane_image,averaged_lines)
+# combo_image = cv2.addWeighted(lane_image, 0.8, line_image,1,1)
+# cv2.imshow("POPUP",combo_image)  # write the picture -> get two arguments: 1. the name of the window will pop out. 2.the image variable.
+# cv2.waitKey(0)  # wait command to keep the window up until the user click anything.
+# #plt.imshow(canny)  # write the picture -> get one argument: the image variable.
+# #plt.show() #shows the output without limited time.
+
+
+cap = cv2.VideoCapture("test2.mp4")
+while(cap.isOpened()):
+    _, frame = cap.read()
+    canny_image = Canny(frame)
+    cropped_image = regionOfInterest(canny_image)
+    lines = cv2.HoughLinesP(cropped_image, 2, np.pi / 180, 100, np.array([]), minLineLength=40, maxLineGap=5)
+    # 1. which image 2. height of bins 3.width of bins 4.array to work with 5. min to connect 6. max to connect
+    averaged_lines = average_slope_intercept(frame, lines)
+    line_image = display_lines(frame, averaged_lines)
+    combo_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1)
+    cv2.imshow("POPUP",
+               combo_image)  # write the picture -> get two arguments: 1. the name of the window will pop out. 2.the image variable.
+    if cv2.waitKey(1) == ord('a'):
+        break
+cap.release()
+cv2.destroyAllWindows()
